@@ -224,6 +224,23 @@ elseif(SFML_OS_ANDROID)
         ${SRCROOT}/Android/SensorImpl.cpp
     )
     source_group("android" FILES ${PLATFORM_SRC})
+elseif(SFML_OS_SWITCH)
+    set(PLATFORM_SRC
+        ${SRCROOT}/Switch/CursorImpl.hpp
+        ${SRCROOT}/Switch/CursorImpl.cpp
+        ${SRCROOT}/Switch/ClipboardImpl.hpp
+        ${SRCROOT}/Switch/ClipboardImpl.cpp
+        ${SRCROOT}/Switch/WindowImplSwitch.hpp
+        ${SRCROOT}/Switch/WindowImplSwitch.cpp
+        ${SRCROOT}/Switch/VideoModeImpl.cpp
+        ${SRCROOT}/Switch/InputImpl.hpp
+        ${SRCROOT}/Switch/InputImpl.cpp
+        ${SRCROOT}/Switch/JoystickImpl.hpp
+        ${SRCROOT}/Switch/JoystickImpl.cpp
+        ${SRCROOT}/Switch/SensorImpl.hpp
+        ${SRCROOT}/Switch/SensorImpl.cpp
+    )
+    source_group("switch" FILES ${PLATFORM_SRC})
 endif()
 
 # define the sfml-window target

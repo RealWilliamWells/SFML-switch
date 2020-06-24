@@ -33,7 +33,13 @@
 #include <SFML/Window/EGLCheck.hpp>
 #include <SFML/Window/GlContext.hpp>
 #include <SFML/Window/WindowStyle.hpp> // Prevent conflict with macro None from Xlib
+
+#if defined(SFML_SYSTEM_SWITCH)
+#include "/opt/devkitpro/portlibs/switch/include/EGL/egl.h"
+#else
 #include <glad/egl.h>
+#endif
+
 #ifdef SFML_SYSTEM_LINUX
     #include <X11/Xlib.h>
 #endif

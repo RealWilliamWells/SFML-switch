@@ -106,6 +106,10 @@ struct JoystickState
 
     #include <SFML/Window/Android/JoystickImpl.hpp>
 
+#elif defined(SFML_SYSTEM_SWITCH)
+
+    #include <SFML/Window/Switch/JoystickImpl.hpp>
+
 #endif
 
 

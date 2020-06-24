@@ -70,6 +70,14 @@
 
     #define SFML_VULKAN_IMPLEMENTATION_NOT_AVAILABLE
 
+
+#elif defined(SFML_SYSTEM_SWITCH)
+    #include <SFML/Window/Switch/WindowImplSwitch.hpp>
+
+    typedef sf::priv::WindowImplSwitch WindowImplType;
+
+    #define SFML_VULKAN_IMPLEMENTATION_NOT_AVAILABLE
+
 #endif
 
 

@@ -152,9 +152,13 @@ if(SFML_OS_SWITCH)
     # the Switch tools and also find_package for libnx.
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Switch)
 
+
     find_package(Libnx REQUIRED)
     find_package(LibOpenAL REQUIRED)
     find_package(LibOpenGL REQUIRED)
+
+    set (SFML_OPENGL_ES true)
+    
     # this is a workaround to compile sfml-activity without the stl library as a dependency
     # we save the original compilation command line to restore it later in Macro.cmake
     set(CMAKE_CXX_CREATE_SHARED_LIBRARY_WITH_STL ${CMAKE_CXX_CREATE_SHARED_LIBRARY})

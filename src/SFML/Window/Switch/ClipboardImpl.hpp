@@ -22,51 +22,55 @@
 //
 ////////////////////////////////////////////////////////////
 
+#ifndef SFML_CLIPBOARDIMPLANDROID_HPP
+#define SFML_CLIPBOARDIMPLANDROID_HPP
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Window/Cursor.hpp>
-#include <SFML/Window/CursorImpl.hpp>
+#include <SFML/System/String.hpp>
+
 
 namespace sf
 {
-
-////////////////////////////////////////////////////////////
-Cursor::Cursor() : m_impl(new priv::CursorImpl())
+namespace priv
 {
-    // That's it
-}
-
-
 ////////////////////////////////////////////////////////////
-Cursor::~Cursor()
-{
-    delete m_impl;
-}
-
-
+/// \brief Give access to the system clipboard
+///
 ////////////////////////////////////////////////////////////
-bool Cursor::loadFromPixels(const Uint8* pixels, Vector2u size, Vector2u hotspot)
+class ClipboardImpl
 {
-    if ((pixels == 0) || (size.x == 0) || (size.y == 0))
-        return false;
-    else
-        return m_impl->loadFromPixels(pixels, size, hotspot);
-}
+public:
 
+    ////////////////////////////////////////////////////////////
+    /// \brief Get the content of the clipboard as string data
+    ///
+    /// This function returns the content of the clipboard
+    /// as a string. If the clipboard does not contain string
+    /// it returns an empty sf::String object.
+    ///
+    /// \return Current content of the clipboard
+    ///
+    ////////////////////////////////////////////////////////////
+    static String getString();
 
-////////////////////////////////////////////////////////////
-bool Cursor::loadFromSystem(Type type)
-{
-    return m_impl->loadFromSystem(type);
-}
+    ////////////////////////////////////////////////////////////
+    /// \brief Set the content of the clipboard as string data
+    ///
+    /// This function sets the content of the clipboard as a
+    /// string.
+    ///
+    /// \param text sf::String object containing the data to be sent
+    /// to the clipboard
+    ///
+    ////////////////////////////////////////////////////////////
+    static void setString(const String& text);
+};
 
-
-////////////////////////////////////////////////////////////
-const priv::CursorImpl& Cursor::getImpl() const
-{
-    return *m_impl;
-}
+} // namespace priv
 
 } // namespace sf
 
+
+#endif // SFML_CLIPBOARDIMPLANDROID_HPP

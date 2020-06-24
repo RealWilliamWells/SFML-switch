@@ -22,27 +22,31 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_INPUTIMPL_HPP
-#define SFML_INPUTIMPL_HPP
-
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Config.hpp>
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/Window/Win32/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_OPENBSD)
-    #include <SFML/Window/Unix/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_MACOS)
-    #include <SFML/Window/OSX/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_IOS)
-    #include <SFML/Window/iOS/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_ANDROID)
-    #include <SFML/Window/Android/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/Window/Switch/InputImpl.hpp>
-#endif
+#include <SFML/Window/Switch/ClipboardImpl.hpp>
+#include <SFML/System/Err.hpp>
 
 
-#endif // SFML_INPUTIMPL_HPP
+namespace sf
+{
+namespace priv
+{
+////////////////////////////////////////////////////////////
+String ClipboardImpl::getString()
+{
+    sf::err() << "Clipboard API not implemented for Nintendo Switch.\n";
+    return String();
+}
+
+
+////////////////////////////////////////////////////////////
+void ClipboardImpl::setString(const String& text)
+{
+    sf::err() << "Clipboard API not implemented for Nintendo Switch.\n";
+}
+
+} // namespace priv
+
+} // namespace sf

@@ -22,51 +22,67 @@
 //
 ////////////////////////////////////////////////////////////
 
+#ifndef SFML_CURSORIMPLANDROID_HPP
+#define SFML_CURSORIMPLANDROID_HPP
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/Cursor.hpp>
-#include <SFML/Window/CursorImpl.hpp>
+#include <SFML/System/NonCopyable.hpp>
+#include <SFML/System/Vector2.hpp>
+
 
 namespace sf
 {
 
-////////////////////////////////////////////////////////////
-Cursor::Cursor() : m_impl(new priv::CursorImpl())
+namespace priv
 {
-    // That's it
-}
-
-
 ////////////////////////////////////////////////////////////
-Cursor::~Cursor()
-{
-    delete m_impl;
-}
-
-
+/// \brief Android implementation of Cursor
+///
+/// This is a typical "not supported" implementation.
+///
 ////////////////////////////////////////////////////////////
-bool Cursor::loadFromPixels(const Uint8* pixels, Vector2u size, Vector2u hotspot)
+class CursorImpl : NonCopyable
 {
-    if ((pixels == 0) || (size.x == 0) || (size.y == 0))
-        return false;
-    else
-        return m_impl->loadFromPixels(pixels, size, hotspot);
-}
+public:
 
+    ////////////////////////////////////////////////////////////
+    /// \brief Default constructor
+    ///
+    /// Refer to sf::Cursor::Cursor().
+    ///
+    ////////////////////////////////////////////////////////////
+    CursorImpl();
 
-////////////////////////////////////////////////////////////
-bool Cursor::loadFromSystem(Type type)
-{
-    return m_impl->loadFromSystem(type);
-}
+    ////////////////////////////////////////////////////////////
+    /// \brief Destructor
+    ///
+    /// Refer to sf::Cursor::~Cursor().
+    ///
+    ////////////////////////////////////////////////////////////
+    ~CursorImpl();
 
+    ////////////////////////////////////////////////////////////
+    /// \brief Create a cursor with the provided image
+    ///
+    /// Returns false.
+    ///
+    ////////////////////////////////////////////////////////////
+    bool loadFromPixels(const Uint8* pixels, Vector2u size, Vector2u hotspot);
 
-////////////////////////////////////////////////////////////
-const priv::CursorImpl& Cursor::getImpl() const
-{
-    return *m_impl;
-}
+    ////////////////////////////////////////////////////////////
+    /// \brief Create a native system cursor
+    ///
+    /// Returns false.
+    ///
+    ////////////////////////////////////////////////////////////
+    bool loadFromSystem(Cursor::Type type);
+};
+
+} // namespace priv
 
 } // namespace sf
 
+#endif // SFML_CURSORIMPLANDROID_HPP

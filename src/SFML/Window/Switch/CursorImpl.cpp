@@ -22,27 +22,48 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_INPUTIMPL_HPP
-#define SFML_INPUTIMPL_HPP
-
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Config.hpp>
+#include <SFML/Window/Switch/CursorImpl.hpp>
+#include <switch.h>
 
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/Window/Win32/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_OPENBSD)
-    #include <SFML/Window/Unix/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_MACOS)
-    #include <SFML/Window/OSX/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_IOS)
-    #include <SFML/Window/iOS/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_ANDROID)
-    #include <SFML/Window/Android/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/Window/Switch/InputImpl.hpp>
-#endif
+namespace sf
+{
+namespace priv
+{
+
+////////////////////////////////////////////////////////////
+CursorImpl::CursorImpl()
+{
+    // Nothing.
+}
 
 
-#endif // SFML_INPUTIMPL_HPP
+////////////////////////////////////////////////////////////
+CursorImpl::~CursorImpl()
+{
+    // Nothing.
+}
+
+
+////////////////////////////////////////////////////////////
+bool CursorImpl::loadFromPixels(const Uint8* pixels, Vector2u size, Vector2u hotspot)
+{
+    // Not supported
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////
+bool CursorImpl::loadFromSystem(Cursor::Type type)
+{
+    // Not supported
+    return false;
+}
+
+
+} // namespace priv
+
+} // namespace sf
+

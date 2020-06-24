@@ -40,6 +40,8 @@
     #include <SFML/Window/iOS/ClipboardImpl.hpp>
 #elif defined(SFML_SYSTEM_ANDROID)
     #include <SFML/Window/Android/ClipboardImpl.hpp>
+#elif defined(SFML_SYSTEM_SWITCH)
+    #include <SFML/Window/Switch/ClipboardImpl.hpp>
 #endif
 
 #endif // SFML_CLIPBOARDIMPL_HPP

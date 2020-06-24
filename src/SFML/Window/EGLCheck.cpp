@@ -28,7 +28,12 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/EGLCheck.hpp>
 #include <SFML/System/Err.hpp>
+
+#if defined(SFML_SYSTEM_SWITCH)
+#include "/opt/devkitpro/portlibs/switch/include/EGL/egl.h"
+#else
 #include <glad/egl.h>
+#endif
 
 
 namespace sf

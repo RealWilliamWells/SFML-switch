@@ -51,6 +51,11 @@
 
     #include <SFML/Window/Android/SensorImpl.hpp>
 
+
+#elif defined(SFML_SYSTEM_SWITCH)
+
+    #include <SFML/Window/Switch/SensorImpl.hpp>
+
 #endif
 
 

@@ -22,27 +22,69 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_INPUTIMPL_HPP
-#define SFML_INPUTIMPL_HPP
-
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Config.hpp>
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/Window/Win32/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_OPENBSD)
-    #include <SFML/Window/Unix/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_MACOS)
-    #include <SFML/Window/OSX/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_IOS)
-    #include <SFML/Window/iOS/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_ANDROID)
-    #include <SFML/Window/Android/InputImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/Window/Switch/InputImpl.hpp>
-#endif
+#include <SFML/Window/SensorImpl.hpp>
+#include <SFML/System/Time.hpp>
+#include <switch.h>
 
 
-#endif // SFML_INPUTIMPL_HPP
+namespace sf
+{
+namespace priv
+{
+////////////////////////////////////////////////////////////
+void SensorImpl::initialize()
+{
+    // TODO
+}
+
+
+////////////////////////////////////////////////////////////
+void SensorImpl::cleanup()
+{
+    // TODO
+}
+
+
+////////////////////////////////////////////////////////////
+bool SensorImpl::isAvailable(Sensor::Type sensor)
+{
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////
+bool SensorImpl::open(Sensor::Type sensor)
+{
+    // TODO
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////
+void SensorImpl::close()
+{
+    // Nothing to do
+}
+
+
+////////////////////////////////////////////////////////////
+Vector3f SensorImpl::update()
+{
+    // TODO
+    return {0.f, 0.f, 0.f};
+}
+
+
+////////////////////////////////////////////////////////////
+void SensorImpl::setEnabled(bool enabled)
+{
+    // TODO
+    
+}
+
+} // namespace priv
+
+} // namespace sf
