@@ -98,6 +98,10 @@
 
     #endif
 
+#elif defined(SWITCH)
+
+    #define SFML_SYSTEM_SWITCH
+
 #else
 
     // Unsupported system
