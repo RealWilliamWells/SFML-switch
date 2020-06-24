@@ -25,6 +25,10 @@
 #ifndef SFML_WINDOWHANDLE_HPP
 #define SFML_WINDOWHANDLE_HPP
 
+
+#if defined(SFML_SYSTEM_SWITCH)
+#include <switch.h>
+#endif
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
@@ -63,9 +67,8 @@ namespace sf
     typedef void* WindowHandle;
 
 #elif defined(SFML_SYSTEM_SWITCH)
-
     // Window handle is ANativeWindow* (void*) on Switch
-    typedef void* WindowHandle;
+    typedef ViDisplay* WindowHandle;
 
 #elif defined(SFML_DOXYGEN)
 

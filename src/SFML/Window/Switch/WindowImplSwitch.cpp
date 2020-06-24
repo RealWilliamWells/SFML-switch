@@ -54,19 +54,23 @@ WindowImplSwitch::WindowImplSwitch(WindowHandle handle)
 WindowImplSwitch::WindowImplSwitch(VideoMode mode, const String& title, unsigned long style, const ContextSettings& settings)
 {
     singleInstance = this;
+
+    viInitialize(ViServiceType_Application);
+    viOpenDefaultDisplay(&display);
 }
 
 
 ////////////////////////////////////////////////////////////
 WindowImplSwitch::~WindowImplSwitch()
 {
+    viCloseDisplay(&display);
 }
 
 
 ////////////////////////////////////////////////////////////
 WindowHandle WindowImplSwitch::getSystemHandle() const
 {
-    return NULL;
+    return (WindowHandle) &display;
 }
 
 
@@ -103,6 +107,7 @@ Vector2u WindowImplSwitch::getSize() const
 ////////////////////////////////////////////////////////////
 void WindowImplSwitch::setSize(const Vector2u& size)
 {
+    // N/A
 }
 
 
