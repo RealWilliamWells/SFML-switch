@@ -30,6 +30,28 @@
 #include <SFML/Window/JoystickImpl.hpp>
 
 
+static HidControllerKeys KEYS_BY_INDEX[] = {
+    KEY_A,
+    KEY_B,
+    KEY_X,
+    KEY_Y,
+    KEY_LSTICK,
+    KEY_RSTICK,
+    KEY_L,
+    KEY_R,
+    KEY_ZL,
+    KEY_ZR,
+    KEY_PLUS,
+    KEY_MINUS,
+    KEY_DLEFT,
+    KEY_DUP,
+    KEY_DRIGHT,
+    KEY_DDOWN
+};
+
+#define NUM_KEYS_BY_INDEX ((int) (sizeof(KEYS_BY_INDEX) / sizeof(HidControllerKeys)))
+
+
 namespace sf
 {
 namespace priv
@@ -37,35 +59,7 @@ namespace priv
 ////////////////////////////////////////////////////////////
 void JoystickImpl::initialize()
 {
-    handle = 0;
-    device = {0};
-    state={0};
-
-    // Set the controller type to Pro-Controller, and set the npadInterfaceType.
-    device.deviceType = HidDeviceType_FullKey3;
-    device.npadInterfaceType = NpadInterfaceType_Bluetooth;
-    // Set the controller colors. The grip colors are for Pro-Controller on [9.0.0+].
-    device.singleColorBody = RGBA8_MAXALPHA(255,255,255);
-    device.singleColorButtons = RGBA8_MAXALPHA(0,0,0);
-    device.colorLeftGrip = RGBA8_MAXALPHA(230,255,0);
-    device.colorRightGrip = RGBA8_MAXALPHA(0,40,20);
-
-    // Setup example controller state.
-    state.batteryCharge = 4; // Set battery charge to full.
-    state.joysticks[JOYSTICK_LEFT].dx = 0x1234;
-    state.joysticks[JOYSTICK_LEFT].dy = -0x1234;
-    state.joysticks[JOYSTICK_RIGHT].dx = 0x5678;
-    state.joysticks[JOYSTICK_RIGHT].dy = -0x5678;
-
-
-    int rc = hiddbgAttachHdlsWorkBuffer();
-    printf("hiddbgAttachHdlsWorkBuffer(): 0x%x\n", rc);
-
-    if (R_SUCCEEDED(rc)) {
-        // Attach a new virtual controller.
-        rc = hiddbgAttachHdlsVirtualDevice(&handle, &device);
-        printf("hiddbgAttachHdlsVirtualDevice(): 0x%x\n", rc);
-    }
+    // N/A for now
 }
 
 
@@ -103,7 +97,9 @@ JoystickCaps JoystickImpl::getCapabilities() const
 {
     // To implement
     JoystickCaps caps = JoystickCaps();
-    caps.buttonCount = 4;
+    caps.buttonCount = NUM_KEYS_BY_INDEX;
+    caps.axes[Joystick::X] = true;
+    caps.axes[Joystick::Y] = true;
     return caps;
 }
 
@@ -121,8 +117,21 @@ Joystick::Identification JoystickImpl::getIdentification() const
 ////////////////////////////////////////////////////////////
 JoystickState JoystickImpl::update()
 {
+    auto sfmlState = JoystickState();
+    HidControllerID conID = hidGetHandheldMode() ? CONTROLLER_HANDHELD : CONTROLLER_PLAYER_1;
+    u64 keys = hidKeysDown(conID);
+    
+    for (int i = 0; i < NUM_KEYS_BY_INDEX; i++)
+        sfmlState.buttons[i] = (keys & KEYS_BY_INDEX[i]) != 0;
+
+
+    JoystickPosition posLeft, posRight;
+    hidJoystickRead(&posLeft, conID, JOYSTICK_LEFT);
+    hidJoystickRead(&posRight, conID, JOYSTICK_RIGHT);
+    sfmlState.axes[Joystick::X] = posLeft.dx;
+    sfmlState.axes[Joystick::Y] = posRight.dy;
     // To implement
-    return JoystickState();
+    return sfmlState;
 }
 
 } // namespace priv

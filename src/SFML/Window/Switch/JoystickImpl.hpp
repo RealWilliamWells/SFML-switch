@@ -108,9 +108,6 @@ private:
     ////////////////////////////////////////////////////////////
 
 };
-    static u64 handle;
-    static HiddbgHdlsDeviceInfo device;
-    static HiddbgHdlsState state;
 
 } // namespace priv
 
