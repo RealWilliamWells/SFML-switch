@@ -77,6 +77,7 @@ WindowHandle WindowImplSwitch::getSystemHandle() const
 ////////////////////////////////////////////////////////////
 void WindowImplSwitch::processEvents()
 {
+    appletMainLoop();
     hidScanInput();
 }
 
