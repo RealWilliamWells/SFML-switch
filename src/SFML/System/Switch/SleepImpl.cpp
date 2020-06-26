@@ -25,64 +25,22 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/Thread.hpp>
-
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/System/Win32/ThreadImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/System/Switch/ThreadImpl.hpp>
-#else
-    #include <SFML/System/Unix/ThreadImpl.hpp>
-#endif
+#include <switch.h>
+#include <errno.h>
+#include <time.h>
+#include <SFML/System/Time.hpp>
 
 
 namespace sf
 {
-////////////////////////////////////////////////////////////
-Thread::~Thread()
+namespace priv
 {
-    wait();
-    delete m_entryPoint;
+////////////////////////////////////////////////////////////
+void sleepImpl(Time time)
+{
+    svcSleepThread((s64) time.asMilliseconds() * 100);
 }
 
-
-////////////////////////////////////////////////////////////
-void Thread::launch()
-{
-    wait();
-    m_impl = new priv::ThreadImpl(this);
-}
-
-
-////////////////////////////////////////////////////////////
-void Thread::wait()
-{
-    if (m_impl)
-    {
-        m_impl->wait();
-        delete m_impl;
-        m_impl = NULL;
-    }
-}
-
-
-////////////////////////////////////////////////////////////
-void Thread::terminate()
-{
-    if (m_impl)
-    {
-        m_impl->terminate();
-        delete m_impl;
-        m_impl = NULL;
-    }
-}
-
-
-////////////////////////////////////////////////////////////
-void Thread::run()
-{
-    m_entryPoint->run();
-}
+} // namespace priv
 
 } // namespace sf

@@ -25,64 +25,70 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <SFML/System/Unix/ThreadImpl.hpp>
 #include <SFML/System/Thread.hpp>
-
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/System/Win32/ThreadImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/System/Switch/ThreadImpl.hpp>
-#else
-    #include <SFML/System/Unix/ThreadImpl.hpp>
-#endif
+#include <iostream>
+#include <cassert>
 
 
 namespace sf
 {
-////////////////////////////////////////////////////////////
-Thread::~Thread()
+namespace priv
 {
-    wait();
-    delete m_entryPoint;
+////////////////////////////////////////////////////////////
+ThreadImpl::ThreadImpl(Thread* owner) :
+m_isActive(true)
+{
+    m_isActive = pthread_create(&m_thread, NULL, &ThreadImpl::entryPoint, owner) == 0;
+
+    if (!m_isActive)
+        std::cerr << "Failed to create thread" << std::endl;
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::launch()
+void ThreadImpl::wait()
 {
-    wait();
-    m_impl = new priv::ThreadImpl(this);
-}
-
-
-////////////////////////////////////////////////////////////
-void Thread::wait()
-{
-    if (m_impl)
+    if (m_isActive)
     {
-        m_impl->wait();
-        delete m_impl;
-        m_impl = NULL;
+        assert(pthread_equal(pthread_self(), m_thread) == 0); // A thread cannot wait for itself!
+        pthread_join(m_thread, NULL);
     }
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::terminate()
+void ThreadImpl::terminate()
 {
-    if (m_impl)
+    if (m_isActive)
     {
-        m_impl->terminate();
-        delete m_impl;
-        m_impl = NULL;
+        #ifndef SFML_SYSTEM_ANDROID
+            pthread_cancel(m_thread);
+        #else
+            // See https://stackoverflow.com/questions/4610086/pthread-cancel-al
+            pthread_kill(m_thread, SIGUSR1);
+        #endif
     }
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::run()
+void* ThreadImpl::entryPoint(void* userData)
 {
-    m_entryPoint->run();
+    // The Thread instance is stored in the user data
+    Thread* owner = static_cast<Thread*>(userData);
+
+    #ifndef SFML_SYSTEM_ANDROID
+        // Tell the thread to handle cancel requests immediately
+        pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    #endif
+
+    // Forward to the owner
+    owner->run();
+
+    return NULL;
 }
+
+} // namespace priv
 
 } // namespace sf

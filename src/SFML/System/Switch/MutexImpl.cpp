@@ -25,64 +25,40 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/Thread.hpp>
-
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/System/Win32/ThreadImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/System/Switch/ThreadImpl.hpp>
-#else
-    #include <SFML/System/Unix/ThreadImpl.hpp>
-#endif
+#include <SFML/System/Switch/MutexImpl.hpp>
+#include <switch.h>
 
 
 namespace sf
 {
-////////////////////////////////////////////////////////////
-Thread::~Thread()
+namespace priv
 {
-    wait();
-    delete m_entryPoint;
+////////////////////////////////////////////////////////////
+MutexImpl::MutexImpl()
+{
+    mutexInit(&m_mutex);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::launch()
+MutexImpl::~MutexImpl()
 {
-    wait();
-    m_impl = new priv::ThreadImpl(this);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::wait()
+void MutexImpl::lock()
 {
-    if (m_impl)
-    {
-        m_impl->wait();
-        delete m_impl;
-        m_impl = NULL;
-    }
+    mutexLock(&m_mutex);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::terminate()
+void MutexImpl::unlock()
 {
-    if (m_impl)
-    {
-        m_impl->terminate();
-        delete m_impl;
-        m_impl = NULL;
-    }
+    mutexUnlock(&m_mutex);
 }
 
-
-////////////////////////////////////////////////////////////
-void Thread::run()
-{
-    m_entryPoint->run();
-}
+} // namespace priv
 
 } // namespace sf

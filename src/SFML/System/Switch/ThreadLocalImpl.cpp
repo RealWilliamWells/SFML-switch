@@ -25,64 +25,41 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/Thread.hpp>
-
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/System/Win32/ThreadImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/System/Switch/ThreadImpl.hpp>
-#else
-    #include <SFML/System/Unix/ThreadImpl.hpp>
-#endif
+#include <SFML/System/Unix/ThreadLocalImpl.hpp>
 
 
 namespace sf
 {
-////////////////////////////////////////////////////////////
-Thread::~Thread()
+namespace priv
 {
-    wait();
-    delete m_entryPoint;
+////////////////////////////////////////////////////////////
+ThreadLocalImpl::ThreadLocalImpl() :
+m_key(0)
+{
+    pthread_key_create(&m_key, NULL);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::launch()
+ThreadLocalImpl::~ThreadLocalImpl()
 {
-    wait();
-    m_impl = new priv::ThreadImpl(this);
+    pthread_key_delete(m_key);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::wait()
+void ThreadLocalImpl::setValue(void* value)
 {
-    if (m_impl)
-    {
-        m_impl->wait();
-        delete m_impl;
-        m_impl = NULL;
-    }
+    pthread_setspecific(m_key, value);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Thread::terminate()
+void* ThreadLocalImpl::getValue() const
 {
-    if (m_impl)
-    {
-        m_impl->terminate();
-        delete m_impl;
-        m_impl = NULL;
-    }
+    return pthread_getspecific(m_key);
 }
 
-
-////////////////////////////////////////////////////////////
-void Thread::run()
-{
-    m_entryPoint->run();
-}
+} // namespace priv
 
 } // namespace sf

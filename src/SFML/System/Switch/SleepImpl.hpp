@@ -22,67 +22,31 @@
 //
 ////////////////////////////////////////////////////////////
 
+#ifndef SFML_SLEEPIMPLUNIX_HPP
+#define SFML_SLEEPIMPLUNIX_HPP
+
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/Thread.hpp>
-
-
-#if defined(SFML_SYSTEM_WINDOWS)
-    #include <SFML/System/Win32/ThreadImpl.hpp>
-#elif defined(SFML_SYSTEM_SWITCH)
-    #include <SFML/System/Switch/ThreadImpl.hpp>
-#else
-    #include <SFML/System/Unix/ThreadImpl.hpp>
-#endif
+#include <SFML/Config.hpp>
+#include <SFML/System/Time.hpp>
 
 
 namespace sf
 {
-////////////////////////////////////////////////////////////
-Thread::~Thread()
+namespace priv
 {
-    wait();
-    delete m_entryPoint;
-}
-
-
 ////////////////////////////////////////////////////////////
-void Thread::launch()
-{
-    wait();
-    m_impl = new priv::ThreadImpl(this);
-}
-
-
+/// \brief Unix implementation of sf::Sleep
+///
+/// \param time Time to sleep
+///
 ////////////////////////////////////////////////////////////
-void Thread::wait()
-{
-    if (m_impl)
-    {
-        m_impl->wait();
-        delete m_impl;
-        m_impl = NULL;
-    }
-}
+void sleepImpl(Time time);
 
-
-////////////////////////////////////////////////////////////
-void Thread::terminate()
-{
-    if (m_impl)
-    {
-        m_impl->terminate();
-        delete m_impl;
-        m_impl = NULL;
-    }
-}
-
-
-////////////////////////////////////////////////////////////
-void Thread::run()
-{
-    m_entryPoint->run();
-}
+} // namespace priv
 
 } // namespace sf
+
+
+#endif // SFML_SLEEPIMPLUNIX_HPP

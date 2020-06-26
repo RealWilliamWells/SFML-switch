@@ -98,7 +98,7 @@
 
     #endif
 
-#elif defined(SWITCH)
+#elif defined(__SWITCH__)
 
     #define SFML_SYSTEM_SWITCH
 

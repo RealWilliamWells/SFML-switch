@@ -29,6 +29,8 @@
 
 #if defined(SFML_SYSTEM_WINDOWS)
     #include <SFML/System/Win32/MutexImpl.hpp>
+#elif defined(SFML_SYSTEM_SWITCH)
+    #include <SFML/System/Switch/MutexImpl.hpp>
 #else
     #include <SFML/System/Unix/MutexImpl.hpp>
 #endif
