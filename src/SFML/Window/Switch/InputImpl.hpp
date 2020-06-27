@@ -158,6 +158,7 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     static Vector2i getTouchPosition(unsigned int finger, const WindowBase& relativeTo);
+private:
 };
 
 } // namespace priv

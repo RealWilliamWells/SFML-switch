@@ -55,22 +55,27 @@ WindowImplSwitch::WindowImplSwitch(VideoMode mode, const String& title, unsigned
 {
     singleInstance = this;
 
-    viInitialize(ViServiceType_Application);
-    viOpenDefaultDisplay(&display);
+    Result res = viInitialize(ViServiceType_Application);
+    if (R_FAILED(res))
+    {
+        err() << "viInitialize failed" << std::endl;
+    }
+
+    NWindow* defaultPtr = nwindowGetDefault();
+    m_window = *defaultPtr;
 }
 
 
 ////////////////////////////////////////////////////////////
 WindowImplSwitch::~WindowImplSwitch()
 {
-    viCloseDisplay(&display);
 }
 
 
 ////////////////////////////////////////////////////////////
 WindowHandle WindowImplSwitch::getSystemHandle() const
 {
-    return (WindowHandle) &display;
+    return (WindowHandle) &m_window;
 }
 
 

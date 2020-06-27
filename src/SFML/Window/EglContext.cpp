@@ -60,6 +60,7 @@ namespace
 {
     EGLDisplay getInitializedDisplay()
     {
+        
 #if defined(SFML_SYSTEM_ANDROID)
 
         // On Android, its native activity handles this for us
@@ -67,8 +68,7 @@ namespace
         sf::Lock lock(states->mutex);
 
         return states->display;
-
-#endif
+#else
 
         static EGLDisplay display = EGL_NO_DISPLAY;
 
@@ -76,9 +76,11 @@ namespace
         {
             eglCheck(display = eglGetDisplay(EGL_DEFAULT_DISPLAY));
             eglCheck(eglInitialize(display, NULL, NULL));
+            eglCheck(eglBindAPI(EGL_OPENGL_API));
         }
 
         return display;
+#endif
     }
 
 
@@ -113,7 +115,6 @@ m_surface (EGL_NO_SURFACE),
 m_config  (NULL)
 {
     ensureInit();
-
     // Get the initialized EGL display
     m_display = getInitializedDisplay();
 
@@ -128,7 +129,6 @@ m_config  (NULL)
         EGL_HEIGHT,1,
         EGL_NONE
     };
-
     eglCheck(m_surface = eglCreatePbufferSurface(m_display, m_config, attrib_list));
 
     // Create EGL context
@@ -154,10 +154,8 @@ m_config  (NULL)
     states->context = this;
 
 #endif
-
     // Get the initialized EGL display
     m_display = getInitializedDisplay();
-
     // Get the best EGL config matching the requested video settings
     m_config = getBestConfig(m_display, bitsPerPixel, settings);
     updateSettings();
@@ -165,7 +163,10 @@ m_config  (NULL)
     // Create EGL context
     createContext(shared);
 
-#if !defined(SFML_SYSTEM_ANDROID)
+#if defined(SFML_SYSTEM_SWITCH)
+    createSurface(nwindowGetDefault());
+
+#elif !defined(SFML_SYSTEM_ANDROID)
     // Create EGL surface (except on Android because the window is created
     // asynchronously, its activity manager will call it for us)
     createSurface((EGLNativeWindowType)owner->getSystemHandle());
@@ -272,12 +273,11 @@ void EglContext::createContext(EglContext* shared)
         toShared = shared->m_context;
     else
         toShared = EGL_NO_CONTEXT;
-
     if (toShared != EGL_NO_CONTEXT)
         eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
     // Create EGL context
-    eglCheck(m_context = eglCreateContext(m_display, m_config, toShared, contextVersion));
+    eglCheck(m_context = eglCreateContext(m_display, m_config, toShared, contextVersion));;
 }
 
 
@@ -305,6 +305,19 @@ EGLConfig EglContext::getBestConfig(EGLDisplay display, unsigned int bitsPerPixe
     ensureInit();
 
     // Set our video settings constraint
+
+#ifdef SFML_SYSTEM_SWITCH
+    const EGLint attributes[] = {
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+        EGL_RED_SIZE,     8,
+        EGL_GREEN_SIZE,   8,
+        EGL_BLUE_SIZE,    8,
+        EGL_ALPHA_SIZE,   8,
+        EGL_DEPTH_SIZE,   24,
+        EGL_STENCIL_SIZE, 8,
+        EGL_NONE
+    };
+#else
     const EGLint attributes[] = {
         EGL_BUFFER_SIZE, static_cast<EGLint>(bitsPerPixel),
         EGL_DEPTH_SIZE, static_cast<EGLint>(settings.depthBits),
@@ -315,6 +328,7 @@ EGLConfig EglContext::getBestConfig(EGLDisplay display, unsigned int bitsPerPixe
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
         EGL_NONE
     };
+#endif
 
     EGLint configCount;
     EGLConfig configs[1];

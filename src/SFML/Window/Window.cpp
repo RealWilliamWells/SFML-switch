@@ -31,7 +31,6 @@
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Err.hpp>
 
-
 namespace sf
 {
 ////////////////////////////////////////////////////////////
@@ -78,9 +77,11 @@ void Window::create(VideoMode mode, const String& title, Uint32 style)
 ////////////////////////////////////////////////////////////
 void Window::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
 {
+    
     // Destroy the previous window implementation
     close();
 
+    
     // Fullscreen style requires some tests
     if (style & Style::Fullscreen)
     {

@@ -25,8 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/Switch/MutexImpl.hpp>
-#include <switch.h>
+#include <SFML/System/Unix/MutexImpl.hpp>
 
 
 namespace sf
@@ -36,27 +35,33 @@ namespace priv
 ////////////////////////////////////////////////////////////
 MutexImpl::MutexImpl()
 {
-    mutexInit(&m_mutex);
+    // Make it recursive to follow the expected behavior
+    pthread_mutexattr_t attributes;
+    pthread_mutexattr_init(&attributes);
+    pthread_mutexattr_settype(&attributes, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&m_mutex, &attributes);
 }
 
 
 ////////////////////////////////////////////////////////////
 MutexImpl::~MutexImpl()
 {
+    pthread_mutex_destroy(&m_mutex);
 }
 
 
 ////////////////////////////////////////////////////////////
 void MutexImpl::lock()
 {
-    mutexLock(&m_mutex);
+    pthread_mutex_lock(&m_mutex);
 }
 
 
 ////////////////////////////////////////////////////////////
 void MutexImpl::unlock()
 {
-    mutexUnlock(&m_mutex);
+    pthread_mutex_unlock(&m_mutex);
 }
 
 } // namespace priv

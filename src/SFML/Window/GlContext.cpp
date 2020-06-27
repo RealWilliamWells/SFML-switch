@@ -436,6 +436,8 @@ GlContext* GlContext::create()
         sharedContext->setActive(false);
     }
 
+
+    // Create the context
     context->initialize(ContextSettings());
 
     return context;
@@ -447,13 +449,14 @@ GlContext* GlContext::create(const ContextSettings& settings, const WindowImpl* 
 {
     // Make sure that there's an active context (context creation may need extensions, and thus a valid context)
     assert(sharedContext != NULL);
-
     Lock lock(mutex);
 
     // If resourceCount is 1 we know that we are inside sf::Context or sf::Window
     // Only in this situation we allow the user to indirectly re-create the shared context as a core context
 
     // Check if we need to convert our shared context into a core context
+
+
     if ((resourceCount == 1) &&
         (settings.attributeFlags & ContextSettings::Core) &&
         !(sharedContext->m_settings.attributeFlags & ContextSettings::Core))
@@ -585,6 +588,7 @@ bool GlContext::setActive(bool active)
 {
     if (active)
     {
+
         if (this != currentContext)
         {
             Lock lock(mutex);
@@ -696,12 +700,15 @@ void GlContext::cleanupUnsharedResources()
 ////////////////////////////////////////////////////////////
 void GlContext::initialize(const ContextSettings& requestedSettings)
 {
+
+
     // Activate the context
     setActive(true);
 
     // Retrieve the context version number
     int majorVersion = 0;
     int minorVersion = 0;
+
 
     // Try the new way first
     glGetIntegervFuncType glGetIntegervFunc = reinterpret_cast<glGetIntegervFuncType>(getFunction("glGetIntegerv"));
@@ -715,6 +722,7 @@ void GlContext::initialize(const ContextSettings& requestedSettings)
         err() << "Could not load necessary function to initialize OpenGL context" << std::endl;
         return;
     }
+
 
     glGetIntegervFunc(GL_MAJOR_VERSION, &majorVersion);
     glGetIntegervFunc(GL_MINOR_VERSION, &minorVersion);
@@ -733,6 +741,7 @@ void GlContext::initialize(const ContextSettings& requestedSettings)
         m_settings.minorVersion = 1;
 
         const char* version = reinterpret_cast<const char*>(glGetStringFunc(GL_VERSION));
+
         if (version)
         {
             // OpenGL ES Common Lite profile: The beginning of the returned string is "OpenGL ES-CL major.minor"

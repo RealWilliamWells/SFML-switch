@@ -196,7 +196,7 @@ protected:
     virtual void processEvents();
 
 private:
-    ViDisplay display;
+    NWindow m_window;
 };
 
 } // namespace priv

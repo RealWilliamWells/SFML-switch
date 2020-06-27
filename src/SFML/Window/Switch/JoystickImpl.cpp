@@ -26,7 +26,6 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <switch.h>
-#include <stdio.h>
 #include <SFML/Window/JoystickImpl.hpp>
 
 
@@ -74,7 +73,7 @@ void JoystickImpl::cleanup()
 bool JoystickImpl::isConnected(unsigned int index)
 {
     // To implement
-    return hidIsControllerConnected((HidControllerID) index);
+    return index == 0 || hidIsControllerConnected((HidControllerID) index);
 }
 
 
@@ -118,7 +117,7 @@ Joystick::Identification JoystickImpl::getIdentification() const
 JoystickState JoystickImpl::update()
 {
     auto sfmlState = JoystickState();
-    HidControllerID conID = hidGetHandheldMode() ? CONTROLLER_HANDHELD : CONTROLLER_PLAYER_1;
+    HidControllerID conID = CONTROLLER_P1_AUTO;
     u64 keys = hidKeysDown(conID);
     
     for (int i = 0; i < NUM_KEYS_BY_INDEX; i++)
@@ -127,9 +126,12 @@ JoystickState JoystickImpl::update()
 
     JoystickPosition posLeft, posRight;
     hidJoystickRead(&posLeft, conID, JOYSTICK_LEFT);
+    hidJoystickRead(&posLeft, conID, JOYSTICK_LEFT);
     hidJoystickRead(&posRight, conID, JOYSTICK_RIGHT);
     sfmlState.axes[Joystick::X] = posLeft.dx;
-    sfmlState.axes[Joystick::Y] = posRight.dy;
+    sfmlState.axes[Joystick::Y] = -posLeft.dy;
+    sfmlState.axes[Joystick::U] = posRight.dx;
+    sfmlState.axes[Joystick::V] = -posRight.dy;
     // To implement
     return sfmlState;
 }

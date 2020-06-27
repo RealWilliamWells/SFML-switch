@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/System/Unix/ClockImpl.hpp>
 #include <switch.h>
+#include <time.h>
 
 
 namespace sf
@@ -36,9 +37,10 @@ namespace priv
 ////////////////////////////////////////////////////////////
 Time ClockImpl::getCurrentTime()
 {
-    u64 timestamp;
-    timeGetCurrentTime(TimeType_NetworkSystemClock, &timestamp);
-    return sf::seconds(timestamp);
+    // POSIX implementation
+    timespec time;
+    clock_gettime(CLOCK_MONOTONIC, &time);
+    return sf::microseconds(static_cast<Uint64>(time.tv_sec) * 1000000 + time.tv_nsec / 1000);
 }
 
 } // namespace priv

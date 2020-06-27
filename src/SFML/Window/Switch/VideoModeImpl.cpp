@@ -29,7 +29,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Sleep.hpp>
 #include <switch.h>
-
 namespace sf
 {
 namespace priv
@@ -37,7 +36,6 @@ namespace priv
 ////////////////////////////////////////////////////////////
 std::vector<VideoMode> VideoModeImpl::getFullscreenModes()
 {
-    // Return both portrait and landscape resolutions
     std::vector<VideoMode> modes;
     modes.push_back(getDesktopMode());
     return modes;
@@ -47,14 +45,9 @@ std::vector<VideoMode> VideoModeImpl::getFullscreenModes()
 ////////////////////////////////////////////////////////////
 VideoMode VideoModeImpl::getDesktopMode()
 {
-    ViDisplay display;
-    viOpenDefaultDisplay(&display);
-
-    s32 width, height;
-
-    viGetDisplayResolution(&display, &width, &height);
-    viCloseDisplay(&display);
-
+    NWindow* window = nwindowGetDefault();
+    u32 width, height;
+    nwindowGetDimensions(window, &width, &height);
     return VideoMode(width, height);
 }
 
