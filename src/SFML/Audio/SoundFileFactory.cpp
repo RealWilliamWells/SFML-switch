@@ -74,7 +74,6 @@ SoundFileReader* SoundFileFactory::createReaderFromFilename(const std::string& f
         err() << "Failed to open sound file \"" << filename << "\" (couldn't open stream)" << std::endl;
         return NULL;
     }
-
     // Test the filename in all the registered factories
     for (ReaderFactoryArray::const_iterator it = s_readers.begin(); it != s_readers.end(); ++it)
     {

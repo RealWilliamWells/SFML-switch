@@ -129,9 +129,9 @@ JoystickState JoystickImpl::update()
     hidJoystickRead(&posLeft, conID, JOYSTICK_LEFT);
     hidJoystickRead(&posRight, conID, JOYSTICK_RIGHT);
     sfmlState.axes[Joystick::X] = posLeft.dx;
-    sfmlState.axes[Joystick::Y] = -posLeft.dy;
+    sfmlState.axes[Joystick::Y] = posLeft.dy;
     sfmlState.axes[Joystick::U] = posRight.dx;
-    sfmlState.axes[Joystick::V] = -posRight.dy;
+    sfmlState.axes[Joystick::V] = posRight.dy;
     // To implement
     return sfmlState;
 }

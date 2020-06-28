@@ -221,7 +221,6 @@ bool SoundBuffer::initialize(InputSoundFile& file)
     Uint64       sampleCount  = file.getSampleCount();
     unsigned int channelCount = file.getChannelCount();
     unsigned int sampleRate   = file.getSampleRate();
-
     // Read the samples from the provided file
     m_samples.resize(static_cast<std::size_t>(sampleCount));
     if (file.read(&m_samples[0], sampleCount) == sampleCount)
@@ -267,7 +266,7 @@ bool SoundBuffer::update(unsigned int channelCount, unsigned int sampleRate)
     // Compute the duration
     m_duration = seconds(static_cast<float>(m_samples.size()) / sampleRate / channelCount);
 
-    // Now reattach the buffer to the sounds that use it
+    // Now reattach the buffer to the sounds that use it    // Fill the buffer
     for (SoundList::const_iterator it = sounds.begin(); it != sounds.end(); ++it)
         (*it)->setBuffer(*this);
 

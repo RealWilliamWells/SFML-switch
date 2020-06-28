@@ -60,6 +60,7 @@ InputSoundFile::~InputSoundFile()
 ////////////////////////////////////////////////////////////
 bool InputSoundFile::openFromFile(const std::string& filename)
 {
+    // Find a suitable reader for the file type
     // If the file is already open, first close it
     close();
 
@@ -67,19 +68,16 @@ bool InputSoundFile::openFromFile(const std::string& filename)
     m_reader = SoundFileFactory::createReaderFromFilename(filename);
     if (!m_reader)
         return false;
-
     // Wrap the file into a stream
     FileInputStream* file = new FileInputStream;
     m_stream = file;
     m_streamOwned = true;
-
     // Open it
     if (!file->open(filename))
     {
         close();
         return false;
     }
-
     // Pass the stream to the reader
     SoundFileReader::Info info;
     if (!m_reader->open(*file, info))
