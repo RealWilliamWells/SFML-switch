@@ -47,6 +47,7 @@ make -j 8
 I usually copy the .a libraries to $DEVKITPRO/portlibs/switch/lib after to simplify using the lib.
 
 
+## Examples
 Check out the examples [here](https://github.com/TomBebb/switch-examples/tree/master/sfml) for an example of how to set-up linking.
 
 
