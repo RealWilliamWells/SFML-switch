@@ -4,6 +4,21 @@ This is a Switch port of the SFML libraries
 ## Dependencies
 Before building, you must have devKitPro setup.
 
+You only need libNX to build, but you need these libraries to link against:
+
+  + OpenAL / [MojoAL](https://github.com/TomBebb/mojoAL-switch)
+  + SDL2 (if using MojoAL)
+  + LibNX
+  + FLAC
+  + Vorbis libraries
+  + LibOGG
+  + Mesa
+  + LibPNG
+  + ZLib
+  + Nouveau DRM driver
+  + GLAD
+  + BZip2
+
 
 ## Building
 
