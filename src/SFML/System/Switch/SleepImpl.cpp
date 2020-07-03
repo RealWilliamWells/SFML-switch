@@ -38,7 +38,7 @@ namespace priv
 ////////////////////////////////////////////////////////////
 void sleepImpl(Time time)
 {
-    svcSleepThread((s64) time.asMilliseconds() * 100);
+    svcSleepThread(time.asMicroseconds() * 1000);
 }
 
 } // namespace priv
