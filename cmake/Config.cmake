@@ -72,7 +72,7 @@ elseif(SWITCH)
     set(SFML_OS_SWITCH  1)
 
     # use the OpenGL ES implementation on Android
-    set(OPENGL_ES 1)
+    set(OPENGL_ES 2)
 else()
     message(FATAL_ERROR "Unsupported operating system or environment")
     return()
