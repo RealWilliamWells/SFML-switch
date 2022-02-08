@@ -90,16 +90,23 @@ void InputImpl::setMousePosition(const Vector2i& position, const WindowBase& rel
 ////////////////////////////////////////////////////////////
 bool InputImpl::isTouchDown(unsigned int finger)
 {
-    return (finger < hidTouchCount());
+    HidTouchScreenState touchState;
+    hidGetTouchScreenStates(&touchState, finger);
+
+    return (finger < touchState.count);
 }
 
 
 ////////////////////////////////////////////////////////////
 Vector2i InputImpl::getTouchPosition(unsigned int finger)
 {
-    touchPosition touch;
-    hidTouchRead(&touch, finger);
-    return {(int) touch.px, (int) touch.py};
+    HidTouchScreenState touchState;
+    hidGetTouchScreenStates(&touchState, finger);
+
+    // TODO handle multiple touches
+    HidTouchState touch = touchState.touches[0];
+
+    return {(int) touch.x, (int) touch.y};
 }
 
 

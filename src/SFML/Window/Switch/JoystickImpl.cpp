@@ -29,26 +29,26 @@
 #include <SFML/Window/JoystickImpl.hpp>
 
 
-static HidControllerKeys KEYS_BY_INDEX[] = {
-    KEY_A,
-    KEY_B,
-    KEY_X,
-    KEY_Y,
-    KEY_LSTICK,
-    KEY_RSTICK,
-    KEY_L,
-    KEY_R,
-    KEY_ZL,
-    KEY_ZR,
-    KEY_PLUS,
-    KEY_MINUS,
-    KEY_DLEFT,
-    KEY_DUP,
-    KEY_DRIGHT,
-    KEY_DDOWN
+static HidNpadButton KEYS_BY_INDEX[] = {
+    HidNpadButton_A,
+    HidNpadButton_B,
+    HidNpadButton_X,
+    HidNpadButton_Y,
+    HidNpadButton_StickL,
+    HidNpadButton_StickR,
+    HidNpadButton_L,
+    HidNpadButton_R,
+    HidNpadButton_ZL,
+    HidNpadButton_ZR,
+    HidNpadButton_Plus,
+    HidNpadButton_Minus,
+    HidNpadButton_Left,
+    HidNpadButton_Up,
+    HidNpadButton_Right,
+    HidNpadButton_Down
 };
 
-#define NUM_KEYS_BY_INDEX ((int) (sizeof(KEYS_BY_INDEX) / sizeof(HidControllerKeys)))
+#define NUM_KEYS_BY_INDEX ((int) (sizeof(KEYS_BY_INDEX) / sizeof(HidNpadButton)))
 
 
 namespace sf
@@ -73,7 +73,9 @@ void JoystickImpl::cleanup()
 bool JoystickImpl::isConnected(unsigned int index)
 {
     // To implement
-    return index == 0 || hidIsControllerConnected((HidControllerID) index);
+    PadState padState;
+    padState.id_mask = index;
+    return index == 0 || padIsConnected(&padState);
 }
 
 
@@ -96,7 +98,7 @@ JoystickCaps JoystickImpl::getCapabilities() const
 {
     // To implement
     JoystickCaps caps = JoystickCaps();
-    caps.buttonCount = NUM_KEYS_BY_INDEX;
+    caps.buttonCount = NUM_KEYS_BY_INDEX; // Update this later lmao
     caps.axes[Joystick::X] = true;
     caps.axes[Joystick::Y] = true;
     return caps;
@@ -117,21 +119,22 @@ Joystick::Identification JoystickImpl::getIdentification() const
 JoystickState JoystickImpl::update()
 {
     auto sfmlState = JoystickState();
-    HidControllerID conID = CONTROLLER_P1_AUTO;
-    u64 keys = hidKeysDown(conID);
-    
+    HidNpadIdType conID = HidNpadIdType_No1;
+    PadState padState;
+    padState.id_mask = conID;
+    u64 keys = padGetButtonsDown(&padState);
+
     for (int i = 0; i < NUM_KEYS_BY_INDEX; i++)
         sfmlState.buttons[i] = (keys & KEYS_BY_INDEX[i]) != 0;
 
 
-    JoystickPosition posLeft, posRight;
-    hidJoystickRead(&posLeft, conID, JOYSTICK_LEFT);
-    hidJoystickRead(&posLeft, conID, JOYSTICK_LEFT);
-    hidJoystickRead(&posRight, conID, JOYSTICK_RIGHT);
-    sfmlState.axes[Joystick::X] = posLeft.dx;
-    sfmlState.axes[Joystick::Y] = posLeft.dy;
-    sfmlState.axes[Joystick::U] = posRight.dx;
-    sfmlState.axes[Joystick::V] = posRight.dy;
+    HidAnalogStickState posLeft, posRight;
+    posLeft = padGetStickPos(&padState, HidNpadJoyDeviceType_Left);
+    posRight = padGetStickPos(&padState, HidNpadJoyDeviceType_Right);
+    sfmlState.axes[Joystick::X] = posLeft.x;
+    sfmlState.axes[Joystick::Y] = posLeft.y;
+    sfmlState.axes[Joystick::U] = posRight.x;
+    sfmlState.axes[Joystick::V] = posRight.y;
     // To implement
     return sfmlState;
 }
