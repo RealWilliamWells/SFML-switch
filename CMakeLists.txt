@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 
+set (CMAKE_CXX_STANDARD 20)
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=sign-conversion -Wno-error=pedantic -Wno-error=missing-field-initializers")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+
 set(CMAKE_USER_MAKE_RULES_OVERRIDE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompilerOptionsOverride.cmake")
 
 # FOR DEVELOPMENT
