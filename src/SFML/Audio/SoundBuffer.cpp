@@ -229,7 +229,6 @@ bool SoundBuffer::initialize(InputSoundFile& file)
     Uint64       sampleCount  = file.getSampleCount();
     unsigned int channelCount = file.getChannelCount();
     unsigned int sampleRate   = file.getSampleRate();
-
     // Read the samples from the provided file
     m_samples.resize(static_cast<std::size_t>(sampleCount));
     if (file.read(m_samples.data(), sampleCount) == sampleCount)

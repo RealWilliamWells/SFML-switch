@@ -231,6 +231,23 @@ elseif(SFML_OS_ANDROID)
         ${SRCROOT}/Android/SensorImpl.cpp
     )
     source_group("android" FILES ${PLATFORM_SRC})
+elseif(SFML_OS_SWITCH)
+    set(PLATFORM_SRC
+        ${SRCROOT}/Switch/CursorImpl.hpp
+        ${SRCROOT}/Switch/CursorImpl.cpp
+        ${SRCROOT}/Switch/ClipboardImpl.hpp
+        ${SRCROOT}/Switch/ClipboardImpl.cpp
+        ${SRCROOT}/Switch/WindowImplSwitch.hpp
+        ${SRCROOT}/Switch/WindowImplSwitch.cpp
+        ${SRCROOT}/Switch/VideoModeImpl.cpp
+        ${SRCROOT}/Switch/InputImpl.hpp
+        ${SRCROOT}/Switch/InputImpl.cpp
+        ${SRCROOT}/Switch/JoystickImpl.hpp
+        ${SRCROOT}/Switch/JoystickImpl.cpp
+        ${SRCROOT}/Switch/SensorImpl.hpp
+        ${SRCROOT}/Switch/SensorImpl.cpp
+    )
+    source_group("switch" FILES ${PLATFORM_SRC})
 endif()
 
 # define the sfml-window target
@@ -266,7 +283,7 @@ if(SFML_OS_IOS)
     sfml_add_external(GLES LINK "-framework OpenGLES")
 
     target_link_libraries(sfml-window PRIVATE GLES)
-elseif(SFML_OS_ANDROID)
+elseif((SFML_OS_ANDROID) OR (SFML_OS_SWITCH))
     sfml_find_package(GLES INCLUDE "GLES_INCLUDE_DIR" LINK "GLES_LIBRARY")
     
     sfml_find_package(EGL INCLUDE "EGL_INCLUDE_DIR" LINK "EGL_LIBRARY")

@@ -1,4 +1,5 @@
 # detect the OS
+
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(SFML_OS_WINDOWS 1)
 
@@ -66,8 +67,16 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Android")
     set(OPENGL_ES 1)
 # comparing CMAKE_SYSTEM_NAME with "CYGWIN" generates a false warning depending on the CMake version
 # let's avoid it so the actual error is more visible
+
+
 elseif(${CYGWIN})
     message(FATAL_ERROR "Unfortunately SFML doesn't support Cygwin's 'hybrid' status between both Windows and Linux derivatives.\nIf you insist on using the GCC, please use a standalone build of MinGW without the Cygwin environment instead.")
+
+elseif(SWITCH)
+    set(SFML_OS_SWITCH  1)
+
+    # use the OpenGL ES implementation on Android
+    set(OPENGL_ES 2)
 else()
     message(FATAL_ERROR "Unsupported operating system or environment")
     return()

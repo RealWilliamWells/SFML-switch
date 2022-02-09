@@ -76,7 +76,6 @@ std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromFilename(cons
         err() << "Failed to open sound file \"" << filename << "\" (couldn't open stream)" << std::endl;
         return nullptr;
     }
-
     // Test the filename in all the registered factories
     for (const ReaderFactory& readerFactory : s_readers)
     {

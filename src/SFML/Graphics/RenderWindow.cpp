@@ -30,6 +30,8 @@
 #include <SFML/Graphics/GLCheck.hpp>
 #include <SFML/Graphics/RenderTextureImplFBO.hpp>
 
+#include <switch.h>
+
 
 namespace sf
 {

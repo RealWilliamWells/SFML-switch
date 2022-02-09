@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 
-# customize the compiler options CMake uses to initialize variables with
 set(CMAKE_USER_MAKE_RULES_OVERRIDE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompilerOptionsOverride.cmake")
+
+# FOR DEVELOPMENT
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/toolchains/DevkitA64Libnx.cmake)
 
 # define a macro that helps defining an option
 macro(sfml_set_option var default type docstring)
@@ -48,7 +50,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake)
 include(GNUInstallDirs)
 
 # add an option for choosing the build type (shared or static)
-if(NOT (SFML_OS_IOS OR SFML_OS_ANDROID))
+if(NOT (SFML_OS_IOS OR SFML_OS_ANDROID OR SFML_OS_SWITCH))
     sfml_set_option(BUILD_SHARED_LIBS TRUE BOOL "TRUE to build SFML as shared libraries, FALSE to build it as static libraries")
 else()
     if(SFML_OS_IOS)
@@ -59,7 +61,7 @@ else()
 endif()
 
 # add an option for building the examples
-if(NOT SFML_OS_ANDROID)
+if(NOT (SFML_OS_ANDROID OR SFML_OS_SWITCH))
     sfml_set_option(SFML_BUILD_EXAMPLES FALSE BOOL "TRUE to build the SFML examples, FALSE to ignore them")
 else()
     set(SFML_BUILD_EXAMPLES FALSE)
@@ -136,6 +138,27 @@ if(SFML_OS_ANDROID)
 
     # let the user switch ABIs
     set(ANDROID_ABI "armeabi-v7a" CACHE STRING "Look at the NDK docs for currently supported ABIs")
+
+    # this is a workaround to compile sfml-activity without the stl library as a dependency
+    # we save the original compilation command line to restore it later in Macro.cmake
+    set(CMAKE_CXX_CREATE_SHARED_LIBRARY_WITH_STL ${CMAKE_CXX_CREATE_SHARED_LIBRARY})
+    set(CMAKE_CXX_CREATE_SHARED_LIBRARY_WITHOUT_STL "<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>")
+endif()
+
+# Switch options
+if(SFML_OS_SWITCH)
+    message("Building for Nintendo Switch")
+    # We have to add the cmake directory to have access to
+    # the Switch tools and also find_package for libnx.
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Switch)
+
+
+    find_package(Libnx REQUIRED)
+    find_package(LibOpenAL REQUIRED)
+    find_package(LibOpenGL REQUIRED)
+    find_package(LibVorbis REQUIRED)
+
+    set (SFML_OPENGL_ES true)
 
     # this is a workaround to compile sfml-activity without the stl library as a dependency
     # we save the original compilation command line to restore it later in Macro.cmake

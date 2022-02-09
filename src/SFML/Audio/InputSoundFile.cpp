@@ -85,6 +85,7 @@ InputSoundFile::~InputSoundFile()
 ////////////////////////////////////////////////////////////
 bool InputSoundFile::openFromFile(const std::string& filename)
 {
+    // Find a suitable reader for the file type
     // If the file is already open, first close it
     close();
 
@@ -92,7 +93,6 @@ bool InputSoundFile::openFromFile(const std::string& filename)
     auto reader = SoundFileFactory::createReaderFromFilename(filename);
     if (!reader)
         return false;
-
     // Wrap the file into a stream
     auto file = std::make_unique<FileInputStream>();
 

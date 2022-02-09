@@ -50,6 +50,10 @@
 
     #include <SFML/Window/Android/CursorImpl.hpp>
 
+#elif defined(SFML_SYSTEM_SWITCH)
+
+    #include <SFML/Window/Switch/CursorImpl.hpp>
+
 #endif
 
 

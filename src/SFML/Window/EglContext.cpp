@@ -43,6 +43,19 @@
 #ifndef SF_GLAD_EGL_IMPLEMENTATION_INCLUDED
 #define SF_GLAD_EGL_IMPLEMENTATION_INCLUDED
 #define SF_GLAD_EGL_IMPLEMENTATION
+
+#if defined(SFML_SYSTEM_SWITCH)
+#include <switch.h>
+#include <EGL/egl.h>    // EGL library
+#include <EGL/eglext.h> // EGL extensions
+#include <glad/glad.h>  // glad library (OpenGL loader)
+
+static int gladLoaderLoadEGL(EGLDisplay display)
+{
+    return gladLoadGL();
+}
+
+#else
 #include <glad/egl.h>
 #endif
 
@@ -53,25 +66,27 @@ namespace
     {
         EGLDisplay getInitializedDisplay()
         {
+
 #if defined(SFML_SYSTEM_ANDROID)
 
             // On Android, its native activity handles this for us
-            sf::priv::ActivityStates& states = sf::priv::getActivity();
-            std::scoped_lock lock(states.mutex);
+        sf::priv::ActivityStates* states = sf::priv::getActivity(NULL);
+        sf::Lock lock(states->mutex);
 
-            return states.display;
-
-#endif
+        return states->display;
+#else
 
             static EGLDisplay display = EGL_NO_DISPLAY;
 
             if (display == EGL_NO_DISPLAY)
             {
                 eglCheck(display = eglGetDisplay(EGL_DEFAULT_DISPLAY));
-                eglCheck(eglInitialize(display, nullptr, nullptr));
+                eglCheck(eglInitialize(display, NULL, NULL));
+                eglCheck(eglBindAPI(EGL_OPENGL_API));
             }
 
             return display;
+#endif
         }
 
 
@@ -122,7 +137,6 @@ m_config  (nullptr)
         EGL_HEIGHT,1,
         EGL_NONE
     };
-
     eglCheck(m_surface = eglCreatePbufferSurface(m_display, m_config, attrib_list));
 
     // Create EGL context
@@ -148,7 +162,6 @@ m_config  (nullptr)
     states.context = this;
 
 #endif
-
     // Get the initialized EGL display
     m_display = EglContextImpl::getInitializedDisplay();
 
@@ -159,7 +172,10 @@ m_config  (nullptr)
     // Create EGL context
     createContext(shared);
 
-#if !defined(SFML_SYSTEM_ANDROID)
+#if defined(SFML_SYSTEM_SWITCH)
+    createSurface(nwindowGetDefault());
+
+#elif !defined(SFML_SYSTEM_ANDROID)
     // Create EGL surface (except on Android because the window is created
     // asynchronously, its activity manager will call it for us)
     createSurface(owner.getSystemHandle());
@@ -270,12 +286,11 @@ void EglContext::createContext(EglContext* shared)
         toShared = shared->m_context;
     else
         toShared = EGL_NO_CONTEXT;
-
     if (toShared != EGL_NO_CONTEXT)
         eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
     // Create EGL context
-    eglCheck(m_context = eglCreateContext(m_display, m_config, toShared, contextVersion));
+    eglCheck(m_context = eglCreateContext(m_display, m_config, toShared, contextVersion));;
 }
 
 
@@ -303,6 +318,19 @@ EGLConfig EglContext::getBestConfig(EGLDisplay display, unsigned int bitsPerPixe
     EglContextImpl::ensureInit();
 
     // Set our video settings constraint
+
+#ifdef SFML_SYSTEM_SWITCH
+    const EGLint attributes[] = {
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+        EGL_RED_SIZE,     8,
+        EGL_GREEN_SIZE,   8,
+        EGL_BLUE_SIZE,    8,
+        EGL_ALPHA_SIZE,   8,
+        EGL_DEPTH_SIZE,   24,
+        EGL_STENCIL_SIZE, 8,
+        EGL_NONE
+    };
+#else
     const EGLint attributes[] = {
         EGL_BUFFER_SIZE, static_cast<EGLint>(bitsPerPixel),
         EGL_DEPTH_SIZE, static_cast<EGLint>(settings.depthBits),
@@ -313,6 +341,7 @@ EGLConfig EglContext::getBestConfig(EGLDisplay display, unsigned int bitsPerPixe
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
         EGL_NONE
     };
+#endif
 
     EGLint configCount;
     EGLConfig configs[1];

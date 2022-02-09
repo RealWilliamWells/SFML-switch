@@ -1,3 +1,58 @@
+# SFML switch port
+This is a Switch port of the SFML libraries
+
+## Dependencies
+Before building, you must have devKitPro setup.
+
+You only need libNX to build, but you need these libraries to link against:
+
+  + OpenAL / [MojoAL](https://github.com/TomBebb/mojoAL-switch)
+  + SDL2 (if using MojoAL)
+  + LibNX
+  + FLAC
+  + Vorbis libraries
+  + LibOGG
+  + Mesa
+  + LibPNG
+  + ZLib
+  + Nouveau DRM driver
+  + GLAD
+  + BZip2
+
+
+## Building
+
+1. Make build directory:
+
+```bash
+mkdir build
+```
+
+2. Run CMake to generate makefile:
+
+```bash
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/DevkitA64Libnx.cmake
+```
+
+3. Build binaries:
+
+```bash
+make -j 8
+```
+
+4. Static libraries were generated in the lib/ folder.
+
+## Usage
+
+I usually copy the .a libraries to $DEVKITPRO/portlibs/switch/lib after to simplify using the lib.
+
+
+## Examples
+Check out the examples [here](https://github.com/TomBebb/switch-examples/tree/master/sfml) for an example of how to set-up linking.
+
+
+
+
 [![SFML logo](https://www.sfml-dev.org/images/logo.png)](https://www.sfml-dev.org)
 
 # SFML — Simple and Fast Multimedia Library

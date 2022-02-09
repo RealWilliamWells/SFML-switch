@@ -29,6 +29,8 @@
 
 #if defined(SFML_SYSTEM_WINDOWS)
     #include <SFML/System/Win32/SleepImpl.hpp>
+#elif defined(SFML_SYSTEM_SWITCH)
+    #include <SFML/System/Win32/SleepImpl.hpp>
 #else
     #include <SFML/System/Unix/SleepImpl.hpp>
 #endif

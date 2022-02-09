@@ -38,3 +38,4 @@ build/
 .cache/
 .vscode/
 
+cmake-build-debug

@@ -24,6 +24,7 @@
 
 #ifndef SFML_WINDOWSHEADER_HPP
 #define SFML_WINDOWSHEADER_HPP
+#endif
 
 #ifndef NOMINMAX
 #define NOMINMAX

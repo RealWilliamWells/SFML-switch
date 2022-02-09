@@ -25,6 +25,10 @@
 #ifndef SFML_WINDOWHANDLE_HPP
 #define SFML_WINDOWHANDLE_HPP
 
+
+#if defined(SFML_SYSTEM_SWITCH)
+#include <switch.h>
+#endif
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
@@ -61,6 +65,10 @@ namespace sf
 
     // Window handle is ANativeWindow* (void*) on Android
     using WindowHandle = void*;
+
+#elif defined(SFML_SYSTEM_SWITCH)
+    // Window handle is ANativeWindow* (void*) on Switch
+    typedef NWindow* WindowHandle;
 
 #elif defined(SFML_DOXYGEN)
 
