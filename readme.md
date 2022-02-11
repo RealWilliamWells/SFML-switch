@@ -26,6 +26,7 @@ You only need libNX to build, but you need these libraries to link against:
 
 ```bash
 mkdir build
+cd build
 ```
 
 2. Run CMake to generate makefile:
