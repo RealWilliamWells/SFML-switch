@@ -29,7 +29,6 @@
 #include <SFML/Window/WindowStyle.hpp> // important to be included first (conflict with None)
 #include <SFML/Window/Switch/WindowImplSwitch.hpp>
 #include <SFML/Window/Event.hpp>
-#include <SFML/System/Lock.hpp>
 #include <SFML/System/Err.hpp>
 #include <switch.h>
 
