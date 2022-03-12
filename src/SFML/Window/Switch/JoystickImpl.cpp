@@ -53,92 +53,104 @@ static HidNpadButton KEYS_BY_INDEX[] = {
 
 namespace sf
 {
-namespace priv
-{
-////////////////////////////////////////////////////////////
-void JoystickImpl::initialize()
-{
-    // N/A for now
-}
+    namespace priv
+    {
+        PadState padState;
+        JoystickState sfmlJoystickState;
+
+        ////////////////////////////////////////////////////////////
+        JoystickImpl::JoystickImpl()
+        {
+            // do something
+        }
+
+        ////////////////////////////////////////////////////////////
+        void JoystickImpl::initialize()
+        {
+            padState;
+            sfmlJoystickState = JoystickState();
+
+            // Configure our supported input layout: a single player with standard controller styles
+            padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+
+            // Initialize the default gamepad (which reads handheld mode inputs as well as the first connected controller)
+            padInitializeDefault(&padState);
+        }
 
 
 
-////////////////////////////////////////////////////////////
-void JoystickImpl::cleanup()
-{
-}
+        ////////////////////////////////////////////////////////////
+        void JoystickImpl::cleanup()
+        {
+        }
 
 
-////////////////////////////////////////////////////////////
-bool JoystickImpl::isConnected(unsigned int index)
-{
-    // To implement
-    PadState padState;
-    padState.id_mask = index;
-    return index == 0 || padIsConnected(&padState);
-}
+        ////////////////////////////////////////////////////////////
+        bool JoystickImpl::isConnected(unsigned int index)
+        {
+            HidNpadIdType padID = HidNpadIdType_No1; // TODO: Actually check for controller at given index
+//            return padIsNpadActive (&padState, padID);
+            return true;
+        }
 
 
-////////////////////////////////////////////////////////////
-bool JoystickImpl::open(unsigned int index)
-{
-    return true;
-}
+        ////////////////////////////////////////////////////////////
+        bool JoystickImpl::open(unsigned int index)
+        {
+            return true;
+        }
 
 
-////////////////////////////////////////////////////////////
-void JoystickImpl::close()
-{
+        ////////////////////////////////////////////////////////////
+        void JoystickImpl::close()
+        {
 
-}
-
-
-////////////////////////////////////////////////////////////
-JoystickCaps JoystickImpl::getCapabilities() const
-{
-    // To implement
-    JoystickCaps caps = JoystickCaps();
-    caps.buttonCount = NUM_KEYS_BY_INDEX; // Update this later lmao
-    caps.axes[Joystick::X] = true;
-    caps.axes[Joystick::Y] = true;
-    return caps;
-}
+        }
 
 
-////////////////////////////////////////////////////////////
-Joystick::Identification JoystickImpl::getIdentification() const
-{
-    Joystick::Identification ident = Joystick::Identification();
-    ident.name = sf::String("Generic Switch controller");
-    ident.productId = ident.vendorId = 0;
-    return ident;
-}
+        ////////////////////////////////////////////////////////////
+        JoystickCaps JoystickImpl::getCapabilities() const
+        {
+            // To implement
+            JoystickCaps caps = JoystickCaps();
+            caps.buttonCount = NUM_KEYS_BY_INDEX; // Update this later lmao
+            caps.axes[Joystick::X] = true;
+            caps.axes[Joystick::Y] = true;
+            return caps;
+        }
 
 
-////////////////////////////////////////////////////////////
-JoystickState JoystickImpl::update()
-{
-    auto sfmlState = JoystickState();
-    HidNpadIdType conID = HidNpadIdType_No1;
-    PadState padState;
-    padState.id_mask = conID;
-    u64 keys = padGetButtonsDown(&padState);
-
-    for (int i = 0; i < NUM_KEYS_BY_INDEX; i++)
-        sfmlState.buttons[i] = (keys & KEYS_BY_INDEX[i]) != 0;
+        ////////////////////////////////////////////////////////////
+        Joystick::Identification JoystickImpl::getIdentification() const
+        {
+            Joystick::Identification ident = Joystick::Identification();
+            ident.name = sf::String("Generic Switch controller");
+            ident.productId = ident.vendorId = 0;
+            return ident;
+        }
 
 
-    HidAnalogStickState posLeft, posRight;
-    posLeft = padGetStickPos(&padState, HidNpadJoyDeviceType_Left);
-    posRight = padGetStickPos(&padState, HidNpadJoyDeviceType_Right);
-    sfmlState.axes[Joystick::X] = posLeft.x;
-    sfmlState.axes[Joystick::Y] = posLeft.y;
-    sfmlState.axes[Joystick::U] = posRight.x;
-    sfmlState.axes[Joystick::V] = posRight.y;
-    // To implement
-    return sfmlState;
-}
+        ////////////////////////////////////////////////////////////
+        JoystickState JoystickImpl::update()
+        {
+            padUpdate(&padState);
+            u64 keys = padGetButtonsDown(&padState);
 
-} // namespace priv
+            for (int i = 0; i < NUM_KEYS_BY_INDEX; i++)
+                sfmlJoystickState.buttons[i] = (keys & KEYS_BY_INDEX[i]) != 0;
+
+
+            HidAnalogStickState posLeft, posRight;
+            posLeft = padGetStickPos(&padState, HidNpadJoyDeviceType_Left);
+            posRight = padGetStickPos(&padState, HidNpadJoyDeviceType_Right);
+            sfmlJoystickState.axes[Joystick::X] = (float) posLeft.x;
+            sfmlJoystickState.axes[Joystick::Y] = (float) posLeft.y;
+            sfmlJoystickState.axes[Joystick::U] = (float) posRight.x;
+            sfmlJoystickState.axes[Joystick::V] = (float) posRight.y;
+            // To implement
+            return sfmlJoystickState;
+        }
+
+    } // namespace priv
 
 } // namespace sf

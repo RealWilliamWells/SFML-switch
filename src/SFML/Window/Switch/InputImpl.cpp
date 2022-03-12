@@ -93,7 +93,7 @@ bool InputImpl::isTouchDown(unsigned int finger)
     HidTouchScreenState touchState;
     hidGetTouchScreenStates(&touchState, finger);
 
-    return (finger < touchState.count);
+    return (finger <= touchState.count);
 }
 
 
