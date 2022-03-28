@@ -38,6 +38,7 @@
 #include <iostream>
 #include <mutex>
 #include <unordered_map>
+#include <ostream>
 #include <cassert>
 
 
@@ -127,9 +128,9 @@ namespace
             static bool warned = false;
             if (!warned)
             {
-                sf::err() << "OpenGL extension EXT_blend_minmax or EXT_blend_subtract unavailable" << std::endl;
-                sf::err() << "Some blending equations will fallback to sf::BlendMode::Add" << std::endl;
-                sf::err() << "Ensure that hardware acceleration is enabled if available" << std::endl;
+                sf::err() << "OpenGL extension EXT_blend_minmax or EXT_blend_subtract unavailable" << '\n'
+                          << "Some blending equations will fallback to sf::BlendMode::Add" << '\n'
+                          << "Ensure that hardware acceleration is enabled if available" << std::endl;
 
                 warned = true;
             }
@@ -630,8 +631,8 @@ void RenderTarget::applyBlendMode(const BlendMode& mode)
 #else
             err() << "OpenGL extension EXT_blend_minmax and EXT_blend_subtract unavailable" << std::endl;
 #endif
-            err() << "Selecting a blend equation not possible" << std::endl;
-            err() << "Ensure that hardware acceleration is enabled if available" << std::endl;
+            err() << "Selecting a blend equation not possible" << '\n'
+                  << "Ensure that hardware acceleration is enabled if available" << std::endl;
 
             warned = true;
         }
@@ -733,8 +734,8 @@ void RenderTarget::setupDraw(bool useVertexCache, const RenderStates& states)
 void RenderTarget::drawPrimitives(PrimitiveType type, std::size_t firstVertex, std::size_t vertexCount)
 {
     // Find the OpenGL primitive type
-    static const GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
-                                   GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN};
+    static constexpr GLenum modes[] = {GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_TRIANGLES,
+                                       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN};
     GLenum mode = modes[type];
 
     // Draw the primitives

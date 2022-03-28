@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/GLCheck.hpp>
+#include <SFML/Graphics/Image.hpp>
 #ifdef SFML_SYSTEM_ANDROID
     #include <SFML/System/Android/ResourceStream.hpp>
 #endif
@@ -39,6 +40,7 @@
 #include FT_BITMAP_H
 #include FT_STROKER_H
 #include <type_traits>
+#include <ostream>
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
@@ -134,7 +136,15 @@ Font::~Font()
 
 
 ////////////////////////////////////////////////////////////
-bool Font::loadFromFile(const std::string& filename)
+Font::Font(Font&&) noexcept = default;
+
+
+////////////////////////////////////////////////////////////
+Font& Font::operator=(Font&&) noexcept = default;
+
+
+////////////////////////////////////////////////////////////
+bool Font::loadFromFile(const std::filesystem::path& filename)
 {
     #ifndef SFML_SYSTEM_ANDROID
 
@@ -149,16 +159,16 @@ bool Font::loadFromFile(const std::string& filename)
     FT_Library library;
     if (FT_Init_FreeType(&library) != 0)
     {
-        err() << "Failed to load font \"" << filename << "\" (failed to initialize FreeType)" << std::endl;
+        err() << "Failed to load font " << filename << " (failed to initialize FreeType)" << std::endl;
         return false;
     }
     fontHandles->library.reset(library);
 
     // Load the new font face from the specified file
     FT_Face face;
-    if (FT_New_Face(library, filename.c_str(), 0, &face) != 0)
+    if (FT_New_Face(library, filename.string().c_str(), 0, &face) != 0)
     {
-        err() << "Failed to load font \"" << filename << "\" (failed to create the font face)" << std::endl;
+        err() << "Failed to load font " << filename << " (failed to create the font face)" << std::endl;
         return false;
     }
     fontHandles->face.reset(face);
@@ -167,7 +177,7 @@ bool Font::loadFromFile(const std::string& filename)
     FT_Stroker stroker;
     if (FT_Stroker_New(library, &stroker) != 0)
     {
-        err() << "Failed to load font \"" << filename << "\" (failed to create the stroker)" << std::endl;
+        err() << "Failed to load font " << filename << " (failed to create the stroker)" << std::endl;
         return false;
     }
     fontHandles->stroker.reset(stroker);
@@ -175,7 +185,7 @@ bool Font::loadFromFile(const std::string& filename)
     // Select the unicode character map
     if (FT_Select_Charmap(face, FT_ENCODING_UNICODE) != 0)
     {
-        err() << "Failed to load font \"" << filename << "\" (failed to set the Unicode character set)" << std::endl;
+        err() << "Failed to load font " << filename << " (failed to set the Unicode character set)" << std::endl;
         return false;
     }
 
@@ -628,7 +638,7 @@ Glyph Font::loadGlyph(Uint32 codePoint, unsigned int characterSize, bool bold, f
         glyph.bounds.height = static_cast<float>( bitmap.rows);
 
         // Resize the pixel buffer to the new size and fill it with transparent white pixels
-        m_pixelBuffer.resize(width * height * 4);
+        m_pixelBuffer.resize(static_cast<std::size_t>(width) * static_cast<std::size_t>(height) * 4);
 
         Uint8* current = m_pixelBuffer.data();
         Uint8* end = current + width * height * 4;

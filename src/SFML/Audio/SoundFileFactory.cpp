@@ -36,6 +36,7 @@
 #include <SFML/System/FileInputStream.hpp>
 #include <SFML/System/MemoryInputStream.hpp>
 #include <SFML/System/Err.hpp>
+#include <ostream>
 
 
 namespace
@@ -65,7 +66,7 @@ SoundFileFactory::WriterFactoryArray SoundFileFactory::s_writers;
 
 
 ////////////////////////////////////////////////////////////
-std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromFilename(const std::string& filename)
+std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromFilename(const std::filesystem::path& filename)
 {
     // Register the built-in readers/writers on first call
     ensureDefaultReadersWritersRegistered();
@@ -73,7 +74,7 @@ std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromFilename(cons
     // Wrap the input file into a file stream
     FileInputStream stream;
     if (!stream.open(filename)) {
-        err() << "Failed to open sound file \"" << filename << "\" (couldn't open stream)" << std::endl;
+        err() << "Failed to open sound file " << filename << " (couldn't open stream)" << std::endl;
         return nullptr;
     }
     // Test the filename in all the registered factories
@@ -90,7 +91,7 @@ std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromFilename(cons
     }
 
     // No suitable reader found
-    err() << "Failed to open sound file \"" << filename << "\" (format not supported)" << std::endl;
+    err() << "Failed to open sound file " << filename << " (format not supported)" << std::endl;
     return nullptr;
 }
 
@@ -150,7 +151,7 @@ std::unique_ptr<SoundFileReader> SoundFileFactory::createReaderFromStream(InputS
 
 
 ////////////////////////////////////////////////////////////
-std::unique_ptr<SoundFileWriter> SoundFileFactory::createWriterFromFilename(const std::string& filename)
+std::unique_ptr<SoundFileWriter> SoundFileFactory::createWriterFromFilename(const std::filesystem::path& filename)
 {
     // Register the built-in readers/writers on first call
     ensureDefaultReadersWritersRegistered();
@@ -163,7 +164,7 @@ std::unique_ptr<SoundFileWriter> SoundFileFactory::createWriterFromFilename(cons
     }
 
     // No suitable writer found
-    err() << "Failed to open sound file \"" << filename << "\" (format not supported)" << std::endl;
+    err() << "Failed to open sound file " << filename << " (format not supported)" << std::endl;
     return nullptr;
 }
 
