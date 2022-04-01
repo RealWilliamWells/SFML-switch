@@ -88,8 +88,8 @@ namespace sf
         ////////////////////////////////////////////////////////////
         bool JoystickImpl::isConnected(unsigned int index)
         {
-            HidNpadIdType padID = HidNpadIdType_No1; // TODO: Actually check for controller at given index
-            return padIsNpadActive (&padState, padID);
+//            HidNpadIdType padID = HidNpadIdType_No1; // TODO: Actually check for controller at given index
+            return index == 0;
         }
 
 
