@@ -50,6 +50,8 @@ static HidNpadButton KEYS_BY_INDEX[] = {
 
 #define NUM_KEYS_BY_INDEX ((int) (sizeof(KEYS_BY_INDEX) / sizeof(HidNpadButton)))
 
+#define JOY_RANGE_SCALE 0.003051758f;
+
 
 namespace sf
 {
@@ -112,7 +114,7 @@ namespace sf
         {
             // To implement
             JoystickCaps caps = JoystickCaps();
-            caps.buttonCount = NUM_KEYS_BY_INDEX; // Update this later lmao
+            caps.buttonCount = NUM_KEYS_BY_INDEX;
             caps.axes[Joystick::X] = true;
             caps.axes[Joystick::Y] = true;
             return caps;
@@ -142,10 +144,10 @@ namespace sf
             HidAnalogStickState posLeft, posRight;
             posLeft = padGetStickPos(&padState, HidNpadJoyDeviceType_Left);
             posRight = padGetStickPos(&padState, HidNpadJoyDeviceType_Right);
-            sfmlJoystickState.axes[Joystick::X] = (float) posLeft.x;
-            sfmlJoystickState.axes[Joystick::Y] = (float) posLeft.y;
-            sfmlJoystickState.axes[Joystick::U] = (float) posRight.x;
-            sfmlJoystickState.axes[Joystick::V] = (float) posRight.y;
+            sfmlJoystickState.axes[Joystick::X] = (float) posLeft.x * JOY_RANGE_SCALE;
+            sfmlJoystickState.axes[Joystick::Y] = (float) posLeft.y * JOY_RANGE_SCALE;
+            sfmlJoystickState.axes[Joystick::U] = (float) posRight.x * JOY_RANGE_SCALE;
+            sfmlJoystickState.axes[Joystick::V] = (float) posRight.y * JOY_RANGE_SCALE;
             // To implement
             return sfmlJoystickState;
         }
