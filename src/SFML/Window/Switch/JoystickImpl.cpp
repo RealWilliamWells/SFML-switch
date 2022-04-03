@@ -148,6 +148,9 @@ namespace sf
             sfmlJoystickState.axes[Joystick::Y] = (float) posLeft.y * JOY_RANGE_SCALE;
             sfmlJoystickState.axes[Joystick::U] = (float) posRight.x * JOY_RANGE_SCALE;
             sfmlJoystickState.axes[Joystick::V] = (float) posRight.y * JOY_RANGE_SCALE;
+
+            sfmlJoystickState.connected = true;
+
             // To implement
             return sfmlJoystickState;
         }
