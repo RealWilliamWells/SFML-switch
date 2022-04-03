@@ -50,17 +50,14 @@ void InputImpl::setVirtualKeyboardVisible(bool visible)
 ////////////////////////////////////////////////////////////
 bool InputImpl::isMouseButtonPressed(Mouse::Button button)
 {
-    // TODO: use touch?
-
-    return false;
+    return isTouchDown(1);
 }
 
 
 ////////////////////////////////////////////////////////////
 Vector2i InputImpl::getMousePosition()
 {
-    // TODO: use touch?
-    return {0, 0};
+    return getTouchPosition(1);
 }
 
 

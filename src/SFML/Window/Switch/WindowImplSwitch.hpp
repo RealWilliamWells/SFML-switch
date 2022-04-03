@@ -32,6 +32,7 @@
 #include <SFML/Window/WindowImpl.hpp>
 #include <SFML/Window/EglContext.hpp>
 #include <switch.h>
+#include <SFML/Window/InputImpl.hpp>
 
 
 namespace sf
@@ -194,6 +195,9 @@ protected:
     ///
     ////////////////////////////////////////////////////////////
     virtual void processEvents();
+
+    InputImpl switchTouchInput;
+    bool isTouchAlreadyDown = false;
 
 private:
     NWindow m_window;

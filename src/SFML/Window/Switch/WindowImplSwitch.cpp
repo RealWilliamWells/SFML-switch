@@ -32,7 +32,6 @@
 #include <SFML/System/Err.hpp>
 #include <switch.h>
 
-
 ////////////////////////////////////////////////////////////
 // Private data
 ////////////////////////////////////////////////////////////
@@ -83,6 +82,30 @@ void WindowImplSwitch::processEvents()
 {
     appletMainLoop();
     hidInitialize();
+
+    bool isTouchDown = switchTouchInput.isTouchDown(1);
+
+    if (!isTouchAlreadyDown && isTouchDown) {
+        Vector2i touchPos = switchTouchInput.getTouchPosition(1);
+
+        Event event;
+        event.type = Event::TouchBegan;
+        event.touch.finger = 1;
+        event.touch.x = touchPos.x;
+        event.touch.y = touchPos.y;
+
+        pushEvent(event);
+        isTouchAlreadyDown = true;
+    } else if (isTouchAlreadyDown && !isTouchDown) {
+        Event event;
+        event.type = Event::TouchEnded;
+        event.touch.finger = 1;
+        event.touch.x = 0;
+        event.touch.y = 0;
+
+        pushEvent(event);
+        isTouchAlreadyDown = false;
+    }
 }
 
 
